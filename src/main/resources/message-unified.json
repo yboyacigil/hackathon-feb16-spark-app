@@ -1,0 +1,42 @@
+{
+	"method": "authenticate",
+	
+	"request": {
+		"credentials": {
+			"provider": "THUNDERKICK",
+			"token": "0_032e117ceefb1c13c3cc",
+			"playerId": 21729,
+			"gameCode": "tk-barbershop"
+		},
+		"transactionInfo": {
+			"transactionReference": "20827301",
+			"wagerReference": "THUNDERKICK10414301"
+		},
+		
+		"amount": 1.23,
+		"currency": "USD"
+		},
+
+
+		"response": {
+			"status": "OK",
+			"statusMessage": null,
+			"balanceInfo": {
+				"currency": "USD",
+				"realMoneyBalance": 917.35
+			},
+			"playerInfo": {
+				"playerReference": "21729",
+					"alias": "Candas P",
+					"currency": "USD",
+					"country": "VI",
+					"language": "en",
+					"birthDate": 760057200000,
+					"registrationDate": 1432718597000,
+					"siteCode": "comeon",
+					"gender": "MALE",
+					"isTest": true
+			}
+	 },
+	 "executionTime": 48
+}
