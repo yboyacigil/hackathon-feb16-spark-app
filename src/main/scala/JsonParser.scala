@@ -28,13 +28,13 @@ object MyJsonProtocol extends DefaultJsonProtocol {
 
 case class Message(method: String, executionTime: Int, request: MessageRequest, response: MessageResponse)
 
-case class MessageRequest(amount: Option[Double], currency: Option[String], credentials: MessageRequestCredentials, transactionInfo: MessageRequestTransactionInfo)
+case class MessageRequest(amount: Option[Double], currency: Option[String], credentials: MessageRequestCredentials, transactionInfo: Option[MessageRequestTransactionInfo])
 case class MessageRequestCredentials(provider: String, token: String, playerId: Int, gameCode: String)
-case class MessageRequestTransactionInfo(transactionReference: String, wagerReference: String)
+case class MessageRequestTransactionInfo(transactionReference: Option[String], wagerReference: Option[String])
 
 case class MessageResponse(status: String, statusMessage: Option[String], balanceInfo: MessageResponseBalanceInfo, playerInfo: MessageResponsePlayerInfo)
 case class MessageResponseBalanceInfo(currency: String, realMoneyBalance: Double)
-case class MessageResponsePlayerInfo(playerReference: String, alias: String, currency: String, country: String, birthDate: Long, registrationDate: Long, siteCode: String, gender: String, isTest: Boolean)
+case class MessageResponsePlayerInfo(playerReference: Option[String], alias: String, currency: String, country: String, birthDate: Long, registrationDate: Long, siteCode: String, gender: String, isTest: Boolean)
 
 object MyJsonProtocol extends DefaultJsonProtocol {
 	
@@ -57,7 +57,7 @@ object JsonParserTest {
 	def main(args: Array[String]) {
 	
 		// val resources = List("/authenticate.json", "/deposit.json", "/lookup-balance.json", "/withdraw.json")
-		val resources = List("/message-unified.json")
+		val resources = List("/message-sample-from-kafka.json")
 	
 		for (resource <- resources) {
 			println(s"--- $resource")

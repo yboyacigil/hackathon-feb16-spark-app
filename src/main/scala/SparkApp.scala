@@ -1,7 +1,7 @@
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.kafka._
-import org.elasticsearch.spark._ 
+// import org.elasticsearch.spark._
 
 import MyJsonProtocol._
 
@@ -30,21 +30,32 @@ object SparkApp {
 		/** SPRAY	*/
 		import spray.json._
 
-		val messages = stream.map(JsonParser(_).convertTo[Message])
-		messages.foreachRDD(rdd => {
-			rdd.saveToEs("spark/messages")
-		})
+		val messages = stream.map(m => {
+      println(m)
+      JsonParser(m).convertTo[Message]
+    })
+    messages.print()
+//		messages.foreachRDD(rdd => {
+//			rdd.saveToEs("spark/messages")
+//		})
 		
 		val methodCounts = messages.map(_.method).map(m => (m, 1L)).reduceByKey(_ + _)
-		methodCounts.foreachRDD(rdd => {
-			rdd.saveToEs("spark/method-counts")
-		})
+    methodCounts.print()
+//		methodCounts.foreachRDD(rdd => {
+//			rdd.saveToEs("spark/method-counts")
+//		})
 
     val providerCounts = messages.map(m => (m.request.credentials.provider, 1)).reduceByKey(_ + _)
-    providerCounts.foreachRDD(rdd => {
-      rdd.saveToEs("spark/provider-counts")
-    })
+    providerCounts.print()
+//    providerCounts.foreachRDD(rdd => {
+//      rdd.saveToEs("spark/provider-counts")
+//    })
 
+    val gameCounts = messages.map(m => (m.request.credentials.gameCode, 1)).reduceByKey(_ + _)
+    gameCounts.print()
+    //    providerCounts.foreachRDD(rdd => {
+    //      rdd.saveToEs("spark/game-counts")
+    //    })
 		/* */
 				
 		/** JSON4S
@@ -60,5 +71,5 @@ object SparkApp {
 		ssc.start()
 		ssc.awaitTermination()
   }
-	
+
 }
