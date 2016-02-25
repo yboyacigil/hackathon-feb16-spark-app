@@ -1,8 +1,12 @@
 # Created by https://www.gitignore.io/api/scala
 
+# IntelliJ
+.idea
+
+# Mac
 .DS_Store
 
-### Scala ###
+# Scala
 *.class
 *.log
 

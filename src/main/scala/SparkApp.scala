@@ -35,10 +35,16 @@ object SparkApp {
 			rdd.saveToEs("spark/messages")
 		})
 		
-		val methodCounts = messages.map(_.method).map(m => (m, 1L)).reduceByKey(_ + _);
+		val methodCounts = messages.map(_.method).map(m => (m, 1L)).reduceByKey(_ + _)
 		methodCounts.foreachRDD(rdd => {
 			rdd.saveToEs("spark/method-counts")
 		})
+
+    val providerCounts = messages.map(m => (m.request.credentials.provider, 1)).reduceByKey(_ + _)
+    providerCounts.foreachRDD(rdd => {
+      rdd.saveToEs("spark/provider-counts")
+    })
+
 		/* */
 				
 		/** JSON4S
