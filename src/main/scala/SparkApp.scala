@@ -1,7 +1,11 @@
+import java.util.Date
+
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.kafka._
-// import org.elasticsearch.spark._
+import org.elasticsearch.spark._
+import org.apache.spark.SparkContext
+import org.elasticsearch.spark.rdd.EsSpark
 
 import MyJsonProtocol._
 
@@ -32,13 +36,13 @@ object SparkApp {
 
 		val messages = stream.map(m => {
       println(m)
-      JsonParser(m).convertTo[Message]
+      val message = JsonParser(m).convertTo[Message]
+      message.copy(eventTime = Some(new Date()))
     })
-    messages.print()
-//		messages.foreachRDD(rdd => {
-//			rdd.saveToEs("spark/messages")
-//		})
-		
+		messages.foreachRDD(rdd => {
+			rdd.saveToEs("spark/messages")
+		})
+
 		val methodCounts = messages.map(_.method).map(m => (m, 1L)).reduceByKey(_ + _)
     methodCounts.print()
 //		methodCounts.foreachRDD(rdd => {
@@ -53,22 +57,12 @@ object SparkApp {
 
     val gameCounts = messages.map(m => (m.request.credentials.gameCode, 1)).reduceByKey(_ + _)
     gameCounts.print()
-    //    providerCounts.foreachRDD(rdd => {
-    //      rdd.saveToEs("spark/game-counts")
-    //    })
-		/* */
-				
-		/** JSON4S
-		import org.json4s._
-		import org.json4s.jackson.JsonMethods._
-		
-		val messages = stream.map(parse(_))
-		
-		val methodCount = messages.map(json => compact(json \ "method")).map(m => (m, 1L)).reduceByKey(_ + _);
-		methodCount.print() 
-		*/
-		
-		ssc.start()
+//    providerCounts.foreachRDD(rdd => {
+//      rdd.saveToEs("spark/game-counts")
+//    })
+    /* */
+
+    ssc.start()
 		ssc.awaitTermination()
   }
 
